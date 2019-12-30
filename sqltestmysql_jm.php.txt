@@ -1,0 +1,29 @@
+<?php
+for ($i = 1; $i <= 1000; $i++) 
+ {
+    $starttime = microtime(true);
+    $conn = new pdo("mysql:host=servername.mysql.database.azure.com;dbname=databasename", "username@servername","password", array(
+    PDO::ATTR_PERSISTENT => true));
+    $tsql= "SELECT 1 as X";
+    $getResults= $conn->query($tsql);
+    echo ("Reading data from table" . PHP_EOL);
+    if ($getResults == FALSE)
+        echo (sqlsrv_errors());
+    while ($row = $getResults->fetch(PDO::FETCH_ASSOC)) {
+      echo ($row['X'] . PHP_EOL);
+    }
+    $getResults=null;
+    $conn=null;
+    $endtime = microtime(true);
+    $timediff = $endtime - $starttime;
+    echo 'Time'.$i.'---'.secondsToTime($timediff).'.--'.($timediff).PHP_EOL; 
+}
+function secondsToTime($s)
+{
+    $h = floor($s / 3600);
+    $s -= $h * 3600;
+    $m = floor($s / 60);
+    $s -= $m * 60;
+    return $h.':'.sprintf('%02d', $m).':'.sprintf('%02d', $s);
+}
+?>
